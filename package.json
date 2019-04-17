@@ -7,15 +7,10 @@
     "express",
     "passport"
   ],
-  "author": "Jared Hanson",
+  "author": "Rishabh Ananthan",
   "license": "Unlicense",
-  "homepage": "https://github.com/passport/express-4.x-facebook-example",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/passport/express-4.x-facebook-example.git"
-  },
-  "bugs": {
-    "url": "https://github.com/passport/express-4.x-facebook-example/issues"
+  "engine": {
+    "node": "10.15.3"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
