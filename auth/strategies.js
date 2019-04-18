@@ -1,10 +1,10 @@
 var passport = require('passport');
 var Strategy = require('passport-facebook').Strategy;
-var config = require('../config');
+//var config = require('../config.json');
 
 passport.use(new Strategy({
-    clientID: config.clientID,
-    clientSecret: config.clientSecret,
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
     callbackURL: '/profile',
     profileFields: ['id', 'emails', 'name']
   },
