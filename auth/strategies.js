@@ -1,8 +1,9 @@
 var passport = require('passport');
-var Strategy = require('passport-facebook').Strategy;
-//var config = require('../config.json');
+var FacebookStrategy = require('passport-facebook').Strategy;
+var JWTStrategy = require('passport-jwt').Strategy;
+var ExtractJWT = require('passport-jwt').ExtractJwt;
 
-passport.use(new Strategy({
+passport.use(new FacebookStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: '/profile',
@@ -21,3 +22,10 @@ passport.serializeUser(function(user, cb) {
 passport.deserializeUser(function(obj, cb) {
   cb(null, obj);
 });
+
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJWT.fromAuthHeader(),
+  secretOrKey: process.env.CLIENT_SECRET
+}, function(payload, done){
+  return done(null, payload.sub);
+}));
