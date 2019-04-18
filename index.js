@@ -6,10 +6,30 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 const passport = require('passport');
+const mysql = require('mysql');
+
 const routes = require('./routes/routes');
 
 // Create a new Express application.
 const app = express();
+
+// Initialize db
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    database: 'rish'
+});
+
+
+db.connect((err) => {
+    if(err) {
+        throw err;
+    }
+    console.log("DB connection established.");
+});
+global.db = db;
+
 
 // Configure view engine to render EJS templates.
 app.set('views', __dirname + '/views');
