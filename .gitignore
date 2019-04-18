@@ -5,3 +5,4 @@
 node_modules/
 npm-debug.log
 models/
+config.js
