@@ -1,14 +1,19 @@
-<%if (whitelisted) {%>
-    <p>
-        ID: <%= user.id %><br/>
-        Name: <%= user.name.givenName + ' ' + user.name.familyName %><br/>
-        <% if (user.emails) { %>
-        Email: <%= user.emails[0].value %><br/>
-        <% } %>
-        <a href='/whitelist'>Whitelist more users</a><br/>
-    </p>
-<%} else {%>
-    <p>
-        You have not been whitelisted.
-    </p>
-<%} %>
+<p>
+    ID: <%= user.id %><br/>
+    Name: <%= user.name.givenName + ' ' + user.name.familyName %><br/>
+    <% if (user.emails) { %>
+    Email: <%= user.emails[0].value %><br/>
+    <% } %>
+    
+</p>
+
+<p>
+    <% for (var i = 0; i < allUsers.length; i++) {%>
+        Name: <%= allUsers[i].name %>; Email: <%= allUsers[i].email_id %> <br/>
+    <%} %>
+</p>
+
+
+<P>
+    Whitelist another user by clicking <a href='/whitelist'>here</a><br/>
+</P>

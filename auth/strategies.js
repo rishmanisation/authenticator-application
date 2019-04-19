@@ -1,7 +1,17 @@
-var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
-var JWTStrategy = require('passport-jwt').Strategy;
-var ExtractJWT = require('passport-jwt').ExtractJwt;
+const passport = require('passport');
+const FacebookStrategy = require('passport-facebook').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+//const ExtractJWT = require('passport-jwt').ExtractJwt;
+
+const User = require('../models/user');
+
+var cookieExtractor = function(req) {
+  var token = null;
+  if(req && req.cookies) {
+      token = req.cookies['jwt'];
+  }
+  return token;
+}
 
 passport.use(new FacebookStrategy({
     clientID: process.env.CLIENT_ID,
@@ -15,7 +25,6 @@ passport.use(new FacebookStrategy({
 
 
 passport.serializeUser(function(user, cb) {
-  console.log(user);
   cb(null, user);
 });
 
@@ -24,8 +33,21 @@ passport.deserializeUser(function(obj, cb) {
 });
 
 passport.use(new JWTStrategy({
-  jwtFromRequest: ExtractJWT.fromAuthHeader(),
-  secretOrKey: process.env.CLIENT_SECRET
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: 'secret'
 }, function(payload, done){
-  return done(null, payload.sub);
+  /*
+  User.getUserByEmail(payload.sub, (err, user) => {
+    if(err) {
+      return done(err, false);
+    }
+
+    if(user) {
+      return done(null, user);
+    }
+
+    return done(null, false);
+  });
+  */
+ return done(null, payload.sub);
 }));
