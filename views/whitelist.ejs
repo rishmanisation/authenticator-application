@@ -1,3 +1,11 @@
+<% if (errors) {%>
+    <ul>
+        <% for(var i = 0; i < errors.length; i++) { %>
+            <li><%= errors[i].msg %></li>
+        <% } %>
+    </ul>
+<% } %>
+
 <form action='/whitelist' method='post'>
     <label for='email_id'>Enter the email id of the user you wish to whitelist:</label>
     <input id='email_id' type='text' name='email_id'>

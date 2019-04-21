@@ -1,9 +1,7 @@
 <p>
-    ID: <%= user.id %><br/>
-    Name: <%= user.name.givenName + ' ' + user.name.familyName %><br/>
-    <% if (user.emails) { %>
-    Email: <%= user.emails[0].value %><br/>
-    <% } %>
+    ID: <%= user.user_id %><br/>
+    Name: <%= user.first_name + ' ' + user.last_name %><br/>
+    Email: <%= user.email_id %><br/>
     
 </p>
 

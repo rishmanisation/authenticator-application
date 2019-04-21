@@ -1,78 +1,112 @@
 const jwt = require('jwt-simple');
 
-function tokenForUser(user) {
+/**
+ * Generates the JWT for the user.
+ * @param {Object} user 
+ * @param {function} callback 
+ */
+function tokenForUser(user, callback) {
     var timeStamp = new Date().getTime()
-    return jwt.encode({ sub: user, iat: timeStamp }, 'secret');
+    return callback(jwt.encode({ sub: user, iat: timeStamp }, 'secret'));
 }
 
-function getAllWhitelisted(user) {
+
+/**
+ * Function to update the user information in the DB upon sign-in.
+ * @param {Object} user 
+ */
+function updateUserInformation(user) {
     var firstName = user.name.givenName;
     var lastName = user.name.familyName;
     var email = user.emails[0].value;
-    var updateQuery = 'update user_details set first_name=' + "'" + firstName 
-    + "' , last_name='" + lastName + "' where email_id='" + email + "'";
+    var updateQuery = "update user_details set first_name='" + firstName + "', last_name='" + lastName + "' where email_id='" + email + "'";
     db.query(updateQuery, (err) => {
         if(err) {
             throw err;
         }
     });
+}
 
+/**
+ * Retrieves all the whitelisted users.
+ * @param {Object} user 
+ * @param {function} callback 
+ */
+function getAllWhitelisted(user, callback) {
     var allWhitelistedQuery = "select email_id, concat(first_name, ' ', last_name) as name from user_details";
-    var result = db.query(allWhitelistedQuery, (err, result) => {
+    db.query(allWhitelistedQuery, (err, result) => {
         if(err) {
             throw err;
         }
-        return result;
+        return callback(result);
     });
-
-    return result;
 }
 
-exports.getUserByEmail = function(payload) {
+/**
+ * Filters user records based on email id.
+ * @param {Object} payload 
+ * @param {function} callback 
+ */
+function getUserByEmail(payload, callback) {
     var email = payload.email;
-    var query = "select email_id, first_name, last_name from user_details where email_id='" + email + "'";
+    var query = "select user_id, email_id, first_name, last_name from user_details where email_id='" + email + "'";
     db.query(query, (err, result) => {
         if(err) {
             throw err;
         }
+        return callback(result);
     });
 
 }
 
-exports.isWhitelisted = function(user) {
-    var email = user.emails[0].value;
+/**
+ * Check whether a given email id is whitelisted or not.
+ * @param {Object} email
+ * @param {function} callback
+ */
+exports.isWhitelisted = function(email, callback) {
     var checkQuery = 'select count(*) as count from user_details where email_id=' + "'" + email + "'";
-    var result = db.query(checkQuery, (err, result) => {
+    db.query(checkQuery, function(err, result) {
         if(err) {
             throw err;
         }
-        if(result[0].count === 0) {
-            return false;
-        }
-        if(result[0].count != 0) {
-            return true;
-        }
+        return callback(result[0].count === 0);
     });
-    return result;
 }
 
-exports.whitelistUser = function(email) {
-    var insertQuery = "insert into user_details values('" + email + "', 'test', 'user')";
-    var result = db.query(insertQuery, (err, result) => {
-        if(err) {
-            console.log(err);
-            throw err;
-        }
-        return result;
+/**
+ * Whitelist a user.
+ * @param {Object} email
+ * @param {function} callback
+ */
+exports.whitelistUser = function(email, callback) {
+    var insertQuery = "insert into user_details(email_id, first_name, last_name) values('" + email + "', 'test', 'user')";
+    db.query(insertQuery, (err, result) => {
+        return callback(err, result);
     });
-    return result;
 }
 
-exports.getPayload = function(user) {
-    const token = tokenForUser(user);
-    const result = getAllWhitelisted(user);
-    return { user: user, allUsers: result, token: token};
+/**
+ * Generates the payload for a user. Payload consists of current user information, a list of all whitelisted users (for 
+ * display on the profile page) and the user's JWT.
+ * @param {Object} user
+ * @param {function} callback
+ */
+exports.getPayload = function(user, callback) {
+    const currUserPayload = { email: user.emails[0].value };
+    getUserByEmail(currUserPayload, (result) => {
+        const currUserInfo = result[0];
+        updateUserInformation(user);
+        getAllWhitelisted(user, (result) => {
+            const allUsers = result;
+            tokenForUser(user, (result) => {
+                const token = result;
+                return callback({ user: currUserInfo, allUsers: allUsers, token: token });
+            })
+        })
+    });
 }
+
 
 
 

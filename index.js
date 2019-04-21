@@ -1,3 +1,4 @@
+// Environment configuration (for client id, client secret)
 require('dotenv').config();
 
 const express = require('express');
@@ -7,6 +8,7 @@ const bodyParser = require('body-parser');
 const expressSession = require('express-session');
 const passport = require('passport');
 const mysql = require('mysql');
+const flash = require('connect-flash');
 
 const routes = require('./routes/routes');
 
@@ -35,6 +37,7 @@ global.db = db;
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+
 // Use application-level middleware for common functionality, including
 // logging, parsing, and session handling.
 app.use(morgan);
@@ -48,5 +51,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 routes(app);
+
+app.use(flash()); // flash messages
+
+app.use(function (req, res, next) {
+    res.locals.success = req.flash('success');
+    res.locals.info = req.flash('info');
+    res.locals.error = req.flash('error');
+    res.locals.user = req.user || null;
+    next();
+  });
+
 
 app.listen(process.env['PORT'] || 8080);
