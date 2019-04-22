@@ -69,9 +69,9 @@ In addition, there are a large number of external packages used which are mentio
    docker-compose up
    ```
 
-## Endpoints
+## Views
 
-1. GET '/': This is the main endpoint. If the user is logged in it redirects to the profile page. Otherwise, a link to the login page is provided.
+1. GET '/': This is the main page. If the user is logged in it redirects to the profile page. Otherwise, a link to the login page is provided.
 
 2. GET '/login': This is the login page. It consists of a single link that allows the user to login using Facebook.
 
@@ -82,3 +82,11 @@ In addition, there are a large number of external packages used which are mentio
 5. GET '/whitelist': This is a page that allows the user to provide the email address of a person to be whitelisted. Assuming the email address is valid, the database is populated with the information.
 
 6. POST '/whitelist': Accepts the email address of the user to be whitelisted.
+
+## Known Issues
+
+1. When you try to refresh the browser on the profile page, it will throw an error saying 'Authorization code has already been used'. This seems to be an issue with PassportJS middleware
+and I am working on a fix.
+
+2. If you click on the back button in the whitelist page and then visit the page again, it will still show the most recently found errors (if any). While functionality remains unaffected, this
+is still something I am working to fix.

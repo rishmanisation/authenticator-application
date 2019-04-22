@@ -59,6 +59,7 @@ module.exports = function(app) {
     // Can currently whitelist one user at a time.
     app.post('/whitelist', [requireJWT, check('email_id').not().isEmpty().withMessage('Email id cannot be empty').isEmail().withMessage('Invalid format for email id')], (req, res) => {
         var errors = req._validationErrors;
+        //console.log(errors);
         // If there are any errors with the input email id then display the errors and 
         // prompt the user to enter the input again. This uses express-validation module.
         // The following checks are implemented for email id:
@@ -72,10 +73,10 @@ module.exports = function(app) {
         } else {
             // Entered email address is syntactically correct. Proceed to add the user to the
             // database.
-            req.session.success = true;
             var email_id = req.body.email_id;
             User.whitelistUser(email_id, (err, result) => {
                 // Error here indicates that the entered email address is already present in the database.
+                console.log(err);
                 if(err) {
                     req.session.errors = [{msg: 'User with the provided email id is already whitelisted.'}];
                     req.session.success = false;
@@ -84,7 +85,8 @@ module.exports = function(app) {
                 // No errors found. Email address will be stored in the database and the user is redirected
                 // to the profile page.
                 if(result) {
-                    res.redirect('/profile');
+                    req.session.success = true;
+                    res.redirect('/whitelist');
                 }
             });
         }

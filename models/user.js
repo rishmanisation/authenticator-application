@@ -85,7 +85,6 @@ exports.whitelistUser = function(email, callback) {
         return callback(err, result);
     });
 }
-
 /**
  * Generates the payload for a user. Payload consists of current user information, a list of all whitelisted users (for 
  * display on the profile page) and the user's JWT.
