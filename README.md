@@ -61,6 +61,8 @@ In addition, there are a large number of external packages used which are mentio
     nodemon index.js         (for this one you need to have nodemon installed)
     ```
 
+6. In a browser window enter `http://localhost:8080` to access the application.
+
 ## Docker usage
 
    Use the docker-compose script to make sure the containers are properly set up. In the .env file make sure DB_HOST is set to mysql.
@@ -68,6 +70,8 @@ In addition, there are a large number of external packages used which are mentio
    ```
    docker-compose up
    ```
+   
+   Once the containers are up and running enter `http://localhost:8080` in a browser window to access the application.
 
 ## Views
 
@@ -89,4 +93,4 @@ In addition, there are a large number of external packages used which are mentio
 and I am working on a fix.
 
 2. If you click on the back button in the whitelist page and then visit the page again, it will still show the most recently found errors (if any). While functionality remains unaffected, this
-is still something I am working to fix.
+is still something I am working to fix. EDIT: This has been fixed to some extent; however it does still do this on occasion.
