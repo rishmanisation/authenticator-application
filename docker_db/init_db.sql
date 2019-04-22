@@ -1,12 +1,7 @@
 CREATE DATABASE IF NOT EXISTS rish;
 
-/*
-alter user 'root'@'localhost' identified with mysql_native_password by 'root';
-flush privileges;
-FLUSH PRIVILEGES;*/
-
 GRANT ALL PRIVILEGES on rish.*
-TO 'root'@'%' IDENTIFIED BY 'root'
+TO 'rish'@'%' IDENTIFIED BY 'rish'
 WITH GRANT OPTION;
 
 USE rish;
