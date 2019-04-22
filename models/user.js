@@ -20,7 +20,7 @@ function updateUserInformation(user) {
     var lastName = user.name.familyName;
     var email = user.emails[0].value;
     var updateQuery = "update user_details set first_name='" + firstName + "', last_name='" + lastName + "' where email_id='" + email + "'";
-    db.query(updateQuery, (err) => {
+    db.query(updateQuery, (err, result) => {
         if(err) {
             throw err;
         }
@@ -93,17 +93,16 @@ exports.whitelistUser = function(email, callback) {
  * @param {function} callback
  */
 exports.getPayload = function(user, callback) {
-    const currUserPayload = { email: user.emails[0].value };
-    getUserByEmail(currUserPayload, (result) => {
+    updateUserInformation(user);
+    getUserByEmail({email: user.emails[0].value}, (result) => {
         const currUserInfo = result[0];
-        updateUserInformation(user);
         getAllWhitelisted(user, (result) => {
             const allUsers = result;
             tokenForUser(user, (result) => {
                 const token = result;
                 return callback({ user: currUserInfo, allUsers: allUsers, token: token });
-            })
-        })
+            });
+        });
     });
 }
 

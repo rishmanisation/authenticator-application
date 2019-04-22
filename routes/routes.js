@@ -1,12 +1,13 @@
 const passport = require('passport');
 const User = require('../models/user');
-const { check } = require('express-validator/check')
+const express = require('express');
+const ensureLogin = require('connect-ensure-login');
+const { check } = require('express-validator/check');
 
 require('../auth/strategies');
 
-const requireLogin = passport.authenticate('facebook', { scope: ['email'] });
-const callback = passport.authenticate('facebook', { failureRedirect: '/login' });
-const express = require('express');
+const requireLogin = passport.authenticate('facebook', { scope: ['email'], authType: 'reauthenticate' });
+const callback = passport.authenticate('facebook', { failureRedirect: '/' });
 const requireJWT = passport.authenticate('jwt', { session: false });
 
 module.exports = function(app) {
@@ -31,6 +32,7 @@ module.exports = function(app) {
 
     // User profile page
     app.get('/profile', callback, (req, res) => {
+        console.log(req.user);
         const user = req.user;
         User.isWhitelisted(user.emails[0].value, (result) => {
             // If user is not whitelisted do not proceed 
@@ -86,5 +88,16 @@ module.exports = function(app) {
                 }
             });
         }
+    });
+
+    // Route to take user back to the welcome screen.
+    app.get('/logout', (req, res) => {     
+        req.session.destroy((err) => {
+            if(err) {
+                throw err;
+            }
+            req.logout();
+            res.redirect('/');
+        });
     });
 }

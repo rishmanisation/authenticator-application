@@ -12,6 +12,9 @@
   "engine": {
     "node": "10.15.3"
   },
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "body-parser": "1.18.3",
     "connect-ensure-login": "^0.1.1",

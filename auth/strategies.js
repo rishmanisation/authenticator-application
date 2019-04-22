@@ -21,7 +21,7 @@ passport.use(new FacebookStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: '/profile',
-    profileFields: ['id', 'emails', 'name']
+    profileFields: ['id', 'emails', 'name'],
   },
   function(accessToken, refreshToken, profile, done) {
     return done(null, profile);
@@ -32,8 +32,8 @@ passport.serializeUser(function(user, cb) {
     cb(null, user);
 });
 
-passport.deserializeUser(function(obj, cb) {
-    cb(null, obj);
+passport.deserializeUser(function(user, cb) {
+    cb(null, user);
 });
 
 // JWT authentication using Passport JS

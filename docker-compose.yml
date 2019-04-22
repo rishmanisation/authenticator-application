@@ -1,0 +1,18 @@
+version: '2.1'
+services:
+    mysql:
+        image: mysql:5.7
+        build: ./docker_db
+        environment:
+          - MYSQL_DATABASE=rish
+          - MYSQL_ROOT_PASSWORD=root
+        healthcheck:
+            test: "exit 0"
+    
+    authenticator-application:
+        build: .
+        depends_on:
+            mysql:
+                condition: service_healthy
+        ports:
+            - "8080:8080"

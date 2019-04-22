@@ -1,0 +1,14 @@
+FROM node:10.15.3
+
+WORKDIR /usr/src/authenticator-app
+
+RUN apt-get update
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+
+CMD [ "npm", "start" ]
